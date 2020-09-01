@@ -5,6 +5,7 @@ import Login from '../views/login.vue';
 import SignUp from '../views/SignUp.vue';
 import Profile from '../views/Profile.vue';
 import Detail from '../views/Detail.vue';
+import store from '../store/index';
 
 
 Vue.use(VueRouter)
@@ -24,16 +25,26 @@ Vue.use(VueRouter)
     path: '/home',
     name: 'Home',
     component:Home,
+    meta:{
+      requireAuth:true,
+    },
   },
   {
     path: '/profile',
     name: 'profile',
     component:Profile,
+    meta:{
+      requireAuth:true,
+   },
   },
   {
     path: '/detail/:id',
     name: 'detail',
     component:Detail,
+    props:true,
+    meta:{
+      requireAuth:true,
+    },
     props:true,
   },
 ];
@@ -44,4 +55,18 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to,from,next) => {
+  if(
+    to.matched.some((record) => record.meta.requireAuth) &&!store.state.auth
+  ){
+    next({
+      path:"/",
+      query:{
+        redirect:to.fullPath,
+      },
+    });
+  }else{
+    next();
+  }
+});
 export default router
