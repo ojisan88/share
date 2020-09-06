@@ -45,7 +45,6 @@ Vue.use(VueRouter)
     meta:{
       requireAuth:true,
     },
-    props:true,
   },
 ];
 
